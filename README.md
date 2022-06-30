@@ -1,4 +1,7 @@
-# NMAP_Scan_Types
+# NMAP Scan Types (Work on Progress)
+---
+
+This document will try to compile all the scan types that nmap can do with the traffic captures for better understanding of how they work at a network level.
 
 ### TCP SYN Scan
 ----
