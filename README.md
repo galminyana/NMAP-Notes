@@ -19,7 +19,8 @@ The command for a SYN Scan:
 
 The packets flow, are:
 
-- Open Port: Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
+#### Open Port
+Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER <------ SYN,ACK <------- TARGET
@@ -31,7 +32,8 @@ The packets flow, are:
 20:56:33.637856 IP 192.168.1.61.35266 > 192.168.1.1.ssh: Flags [R], seq 483337883, win 0, length 0
 ```
 
-- Closed Port: Nmap receives a RST from the target.
+#### Closed Port 
+Nmap receives a RST from the target.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER <------ RST <------- TARGET
@@ -41,7 +43,8 @@ The packets flow, are:
 20:57:05.218495 IP 192.168.1.1.smtp > 192.168.1.61.52423: Flags [R.], seq 0, ack 764755951, win 0, length 0
 ```
 
-- Filtered Port: nmap does not receive anything from the target (packet dropped) or receives an ICMP Unreachable error.
+#### Filtered Port
+nmap does not receive anything from the target (packet dropped) or receives an ICMP Unreachable error.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER ------> SYN -------> TARGET
