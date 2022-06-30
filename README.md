@@ -3,6 +3,10 @@
 ### TCP SYN Scan
 ----
 
+```bash
+  nmap -sS TARGET
+```
+
 This type of scan does not complete a full TCP connection. It sends a SYN TCP packet, and depending on the target response, nmap decides status of the port based on the response to a SYN Probe:
 
 | Probe Response | Status |
@@ -12,12 +16,6 @@ This type of scan does not complete a full TCP connection. It sends a SYN TCP pa
 |No response received|Filtered|
 |ICMP unreachable error (type 3, code 1, 2, 3, 9, 10, or 13)| Filtered|
 
-The command for a SYN Scan:
-```bash
-  nmap -sS TARGET
-```
-
-The packets flow, are:
 
 #### Open Port
 Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
@@ -55,3 +53,31 @@ nmap does not receive anything from the target (packet dropped) or receives an I
 21:05:00.564158 IP 192.168.1.61.55383 > scanme.nmap.org.http: Flags [S], seq 692280518, win 1024, options [mss 1460], length 0
 ```
 
+### TCP Connect Scan
+---
+
+```bash
+  nmap -sT TARGET
+```
+This type of scan establishes a full TCP connection. 
+
+#### Open Port
+
+```markup
+    ATACKER ------> SYN -------> TARGET
+    ATACKER <------ SYN,ACK <------- TARGET
+    ATACKER ------> ACK -------> TARGET
+    ATACKER ------> RST -------> TARGET
+```
+```bash
+21:13:04.200743 IP 192.168.1.61.45178 > 192.168.1.1.ssh: Flags [S], seq 2141274705, win 64240, options [mss 1460,sackOK,TS val 4229566320 ecr 0,nop,wscale 7], length 0
+21:13:04.204891 IP 192.168.1.1.ssh > 192.168.1.61.45178: Flags [S.], seq 4214332755, ack 2141274706, win 14480, options [mss 1460,sackOK,TS val 3077863243 ecr 4229566320,nop,wscale 4], length 0
+21:13:04.204954 IP 192.168.1.61.45178 > 192.168.1.1.ssh: Flags [.], ack 1, win 502, options [nop,nop,TS val 4229566324 ecr 3077863243], length 0
+21:13:04.205058 IP 192.168.1.61.45178 > 192.168.1.1.ssh: Flags [R.], seq 1, ack 1, win 502, options [nop,nop,TS val 4229566324 ecr 3077863243], length 0
+```
+
+#### Closed Port
+It's the same behaviour as the SYN Scan
+
+#### Filtered Port
+Same behaviour as the SYN Scan
