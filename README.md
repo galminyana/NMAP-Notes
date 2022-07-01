@@ -7,6 +7,15 @@ This document will try to compile all the scan types that nmap can do with the t
 ----
 This type of scan does not complete a full TCP connection. It sends a SYN TCP packet, and depending on the target response, nmap decides status of the port based on the response to a SYN Probe:
 
+```markup
+   # Probe Response         # Status   #
+   #------------------------#----------#
+   # TCP SYN/ACK response   # Open     #
+   # TCP RST response       # Closed   #
+   # No response received   # Filtered #
+   # ICMP unreachable error # Filtered #
+   #  (type 3, code 1,2,3,9,10,13)     #
+```
 | Probe Response | Status |
 |-|-|
 |TCP SYN/ACK response|Open|
