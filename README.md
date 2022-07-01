@@ -76,8 +76,9 @@ It's the same behaviour as the SYN Scan
 #### Filtered Port
 Same behaviour as the SYN Scan
 
-### TCP FIN, NULL, and Xmas (-sF, -sN, -sX)
+### TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)
 ---
+
 This three types of scans work in the same behaviour, just change the flags of the header:
 - NULL: Does not set any bits in the header (0)
 - FIN: Sets only the FIN bit
@@ -86,49 +87,38 @@ This three types of scans work in the same behaviour, just change the flags of t
 It exploits a definition in the TCP RFC 793, that if the target port receives any packet that does not contain SYN/RST/ACK, then:
 - If target port is closed, the target respond with a RST
 - If target port it's open, there is no response at all
-> This type of scan gives false results on modern systems, specially for closed ports.
+
 | Probe Response | Status |
 |-|-|
 |No response received |Open or Filtered|
 |TCP RST packet|Closed|
 |ICMP unreachable error (type 3, code 1, 2, 3, 9, 10, or 13)|Filtered|
 
-#### FIN
-When the port it's open:
+This type of scans don't work on systems not supporting the RFC. Won't work on Windows and will work on Unix like systems. 
+See different packet capture for each scan type for an open port
 ```bash
     # Target port 22 it's open for this example
-    nmap -sF 192.168.1.1 -p22
+    nmap -sN 192.168.1.1 -p22
     PORT   STATE         SERVICE
     22/tcp open|filtered ssh
 ```
+#### FIN Scan 
 ```bash
     # No response, port is NOT closed
     23:39:06.007022 IP 192.168.1.61.48111 > 192.168.1.1.ssh: Flags [F], seq 3108583640, win 1024, length 0
     23:39:06.107481 IP 192.168.1.61.48113 > 192.168.1.1.ssh: Flags [F], seq 3108714714, win 1024, length 0
 ```
-And when port it's closed
+#### NULL Scan
 ```bash
-# Target port 25 it's closed
-nmap -sF 192.168.1.1 -p25
-PORT   STATE         SERVICE
-22/tcp open|filtered ssh
+    # No response, port is NOT closed
+    00:00:55.948950 IP 192.168.1.61.53762 > 192.168.1.1.ssh: Flags [none], win 1024, length 0
+    00:00:56.053450 IP 192.168.1.61.53764 > 192.168.1.1.ssh: Flags [none], win 1024, length 0
 ```
+#### Xmas Scan
 ```bash
-# No response, port is closed
-23:39:06.007022 IP 192.168.1.61.48111 > 192.168.1.1.ssh: Flags [F], seq 3108583640, win 1024, length 0
-23:39:06.107481 IP 192.168.1.61.48113 > 192.168.1.1.ssh: Flags [F], seq 3108714714, win 1024, length 0
-```
-#### NULL
-```bash
-# Target port 22 it's open for this example
-nmap -sN 192.168.1.1 -p22
-PORT   STATE         SERVICE
-22/tcp open|filtered ssh
-```
-```bash
-# No response, port is NOT closed
-23:39:06.007022 IP 192.168.1.61.48111 > 192.168.1.1.ssh: Flags [F], seq 3108583640, win 1024, length 0
-23:39:06.107481 IP 192.168.1.61.48113 > 192.168.1.1.ssh: Flags [F], seq 3108714714, win 1024, length 0
+    # No response, port is NOT closed
+    00:02:13.803776 IP 192.168.1.61.63799 > 192.168.1.1.ssh: Flags [FPU], seq 1151864062, win 1024, urg 0, length 0
+    00:02:13.906083 IP 192.168.1.61.63801 > 192.168.1.1.ssh: Flags [FPU], seq 1151995132, win 1024, urg 0, length 0
 ```
 
 
