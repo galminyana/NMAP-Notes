@@ -122,12 +122,38 @@ See different packet capture for each scan type for an open port
     00:02:13.803776 IP 192.168.1.61.63799 > 192.168.1.1.ssh: Flags [FPU], seq 1151864062, win 1024, urg 0, length 0
     00:02:13.906083 IP 192.168.1.61.63801 > 192.168.1.1.ssh: Flags [FPU], seq 1151995132, win 1024, urg 0, length 0
 ```
-
-
-
-
-
-
+### ACK Scan
+---
+It only sets the ACK flag in the probe packet. Usefull to check for firewall rules. Mainly it detects if ports are filtered or unfiltered. If receives a RST, means that either the port is open or closer, hence, the port is unfiltered. When no response or ICMP error received, means the port is filtered
+```markup
+   # Probe Response         # Status           #
+   #------------------------#------------------#
+   # TCP RST response       # Unfiltered       #
+   # No response received   # Filtered         #
+   # ICMP unreachable error # Filtered         #   <--  ICMP type 3, code 1,2,3,9,10,13
+```
+- Unfiltered Port
+```bash
+    # Scanning a open port, not filtered
+    nmap -p22 -sA 192.168.1.1 -Pn
+    PORT   STATE      SERVICE
+    22/tcp unfiltered ssh
+   
+    # RST is received as port is not filtered but open
+    0:20:36.807220 IP 192.168.1.61.59915 > 192.168.1.1.ssh: Flags [.], ack 4272271275, win 1024, length 0
+    00:20:36.810550 IP 192.168.1.1.ssh > 192.168.1.61.59915: Flags [R], seq 4272271275, win 0, length 0
+```
+- Filtered Port
+```bash
+    # Scanning a open port, not filtered
+    nmap -p25 -sA XXXXXXXXXX -Pn
+    PORT   STATE      SERVICE
+    22/tcp unfiltered ssh
+   
+    # RST is received as port is not filtered but open
+    00:22:39.010278 IP 192.168.1.61.49530 > XXXXXXXXXX.smtp: Flags [.], ack 3820581451, win 1024, length 0
+    00:22:40.021481 IP 192.168.1.61.49532 > XXXXXXXXXX.smtp: Flags [.], ack 3820712521, win 1024, length 0
+```
 
 
 
