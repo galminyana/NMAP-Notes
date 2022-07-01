@@ -122,7 +122,7 @@ See different packet capture for each scan type for an open port
     00:02:13.803776 IP 192.168.1.61.63799 > 192.168.1.1.ssh: Flags [FPU], seq 1151864062, win 1024, urg 0, length 0
     00:02:13.906083 IP 192.168.1.61.63801 > 192.168.1.1.ssh: Flags [FPU], seq 1151995132, win 1024, urg 0, length 0
 ```
-### ACK Scan
+### ACK Scan (-sA)
 ---
 It only sets the ACK flag in the probe packet. Usefull to check for firewall rules. Mainly it detects if ports are filtered or unfiltered. If receives a RST, means that either the port is open or closer, hence, the port is unfiltered. When no response or ICMP error received, means the port is filtered
 ```markup
@@ -154,8 +154,50 @@ It only sets the ACK flag in the probe packet. Usefull to check for firewall rul
     00:22:39.010278 IP 192.168.1.61.49530 > XXXXXXXXXX.smtp: Flags [.], ack 3820581451, win 1024, length 0
     00:22:40.021481 IP 192.168.1.61.49532 > XXXXXXXXXX.smtp: Flags [.], ack 3820712521, win 1024, length 0
 ```
+### TCP Window Scan (-sW)
+---
+Not always can rely on this type of scan, as only works on certain systems. Works like ACK Scan, just examining the response for the RST response for the TCP Window Size:
+- Open ports, return a positive window size
+- Closed ones return a zero window
+```markup
+   # Probe Response                              # Status           #
+   #---------------------------------------------#------------------#
+   # TCP RST response with non-zero window field # Unfiltered       #
+   # TCP RST response with zero window field     # Filtered         #
+   # No response received                        # Filtered         #
+   # ICMP unreachable error                      # Filtered         #   <--  ICMP type 3, code 1,2,3,9,10,13
+```
 
+### TCP Mainmon Scan (-sM)
+---
+Not so usefull in actual systems. It sends a probe with FIN and ACK flags, and then should receive a RST response as expected. However, some systems simply drop the packet for open ports. 
+```markup
+   # Probe Response         # Status           #
+   #------------------------#------------------#
+   # No response received   # Unfiltered       #
+   # TCP RST packet         # Filtered         #
+   # ICMP unreachable error # Filtered         #   <--  ICMP type 3, code 1,2,3,9,10,13
+```
+- Open Port
+```bash
+    # Scanning a open port, not filtered. Pot 22. Device is a Router
+    nmap -p22 -sA 192.168.1.1 -Pn
+    PORT   STATE         SERVICE
+    22/tcp open|filtered ssh
+   
+    # RST is received as port is not filtered but open
+    00:41:54.075699 IP 192.168.1.61.61169 > 192.168.1.1.ssh: Flags [F.], seq 0, ack 1929847251, win 1024, length 0
+    00:41:54.177003 IP 192.168.1.61.61171 > 192.168.1.1.ssh: Flags [F.], seq 0, ack 1929716177, win 1024, length 0
+```
 
-
-
-
+- Closed Port
+```bash
+    # Scanning a closed port, on Windows10 machine
+    nmap -p25 -sM 192.168.1.41 -Pn
+    PORT   STATE  SERVICE
+    25/tcp closed smtp
+   
+    # RST is received as port is not filtered but open
+    00:43:51.093734 IP 192.168.1.61.56250 > 192.168.1.41.smtp: Flags [F.], seq 0, ack 1859801841, win 1024, length 0
+    00:43:51.096878 IP 192.168.1.41.smtp > 192.168.1.61.56250: Flags [R], seq 1859801841, win 0, length 0
+```
