@@ -13,16 +13,8 @@ This type of scan does not complete a full TCP connection. It sends a SYN TCP pa
    # TCP SYN/ACK response   # Open     #
    # TCP RST response       # Closed   #
    # No response received   # Filtered #
-   # ICMP unreachable error # Filtered #
-   #  (type 3, code 1,2,3,9,10,13)     #
+   # ICMP unreachable error # Filtered #   <--  ICMP type 3, code 1,2,3,9,10,13
 ```
-| Probe Response | Status |
-|-|-|
-|TCP SYN/ACK response|Open|
-|TCP RST response|Closed|
-|No response received|Filtered|
-|ICMP unreachable error (type 3, code 1, 2, 3, 9, 10, or 13)| Filtered|
-
 
 #### Open Port
 Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
@@ -97,12 +89,13 @@ It exploits a definition in the TCP RFC 793, that if the target port receives an
 - If target port is closed, the target respond with a RST
 - If target port it's open, there is no response at all
 
-| Probe Response | Status |
-|-|-|
-|No response received |Open or Filtered|
-|TCP RST packet|Closed|
-|ICMP unreachable error (type 3, code 1, 2, 3, 9, 10, or 13)|Filtered|
-
+```markup
+   # Probe Response         # Status           #
+   #------------------------#------------------#
+   # No response received   # Open or Filtered #
+   # TCP RST packet         # Closed           #
+   # ICMP unreachable error # Filtered         #   <--  ICMP type 3, code 1,2,3,9,10,13
+```
 This type of scans don't work on systems not supporting the RFC. Won't work on Windows and will work on Unix like systems. 
 See different packet capture for each scan type for an open port
 ```bash
