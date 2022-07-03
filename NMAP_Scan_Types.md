@@ -2,17 +2,17 @@
 
 This document will try to compile all the scan types that nmap can do with the traffic captures for better understanding of how they work at a network level.
 
-    - [TCP SYN Scan (-sS)](#tcp-syn-scan---ss-)
-    - [TCP Connect Scan (-sT)](#tcp-connect-scan---st-)
-    - [TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)](#tcp-fin--null--and-xmas-scan-types---sf---sn---sx-)
-    - [ACK Scan (-sA)](#ack-scan---sa-)
-    - [TCP Window Scan (-sW)](#tcp-window-scan---sw-)
-    - [TCP Mainmon Scan (-sM)](#tcp-mainmon-scan---sm-)
-    - [TCP Iddle Scan (-sI)](#tcp-iddle-scan---si-)
-    - [FTP Bounce Scan (-b)](#ftp-bounce-scan---b-)
-    - [TCP Protocol Scan (-sO)](#tcp-protocol-scan---so-)
-    - [Custom SYN/FIN Scan (--scanflags SYNFIN)](#custom-syn-fin-scan----scanflags-synfin-)
-    - [Custom PSH Scan (--scanflags PSH)](#custom-psh-scan----scanflags-psh-)
+- [TCP SYN Scan (-sS)](#tcp-syn-scan---ss-)
+- [TCP Connect Scan (-sT)](#tcp-connect-scan---st-)
+- [TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)](#tcp-fin--null--and-xmas-scan-types---sf---sn---sx-)
+- [ACK Scan (-sA)](#ack-scan---sa-)
+- [TCP Window Scan (-sW)](#tcp-window-scan---sw-)
+- [TCP Mainmon Scan (-sM)](#tcp-mainmon-scan---sm-)
+- [TCP Iddle Scan (-sI)](#tcp-iddle-scan---si-)
+- [FTP Bounce Scan (-b)](#ftp-bounce-scan---b-)
+- [TCP Protocol Scan (-sO)](#tcp-protocol-scan---so-)
+- [Custom SYN/FIN Scan (--scanflags SYNFIN)](#custom-syn-fin-scan----scanflags-synfin-)
+- [Custom PSH Scan (--scanflags PSH)](#custom-psh-scan----scanflags-psh-)
 
 ### TCP SYN Scan (-sS)
 ----
