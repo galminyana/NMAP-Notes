@@ -269,6 +269,16 @@ When the Zombie is not valid, usually will get the following error:
    …cannot be used because it has not returned any of our probes — perhaps it is down or firewalled.
    QUITTING!”
 ```
+
+### FTP Bounce Scan (-b)
+---
+In the FTP RFT 959, sates about FTP servers to proxy FTP connections, for an user to connect to a FTP server and then ask files to be sent to a 3th party server. This can be abused to cause thr FTP server to scan other hosts ports, simply asking the FTP proxy server to send files to each port of the target host. Actually, FTP servers removed this feature because the abuse it can imply.
+
+```bash
+    nmap -Pn -b ftp.vulnerable.com target_host  <-- Default credentials anonymous with password wwwuser@
+    nmap -Pn -b user:pass@ftp.vulnerable.com target_host
+```
+
 ### TCP Protocol Scan (-sO)
 ---
 To determine which IP protocols are supported by target hosts. It cycles, by default, throught the 256 protocol numbers to check. The `-p` option can be used to select the protocol number to be scaned instead the port (this scan does not scan ports ;-) ).
@@ -278,6 +288,38 @@ To determine which IP protocols are supported by target hosts. It cycles, by def
    #------------------------------------------------#-----------------------#
    # Any response in any protocol from target host  # Open                  #
    # ICMP protocol unreachable erro                 # Closed                #  <--  ICMP type 3, code 2
-   # Other ICMP unreachable errors                  # Filtered              #  <--  ICMP type 3, code 1, 3, 9, 10, or 13
+   # Other ICMP unreachable errors                  # Filtered              #  <--  ICMP type 3, code 1,3,9,10,13
    # No response received                           # Open|Filtered         #   
+```
+
+Check IP Protocol numbers at [https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)
+```bash
+    # Windows 10 Host
+    nmap -sO 192.168.1.47 -p1
+    PROTOCOL STATE SERVICE
+    1        open  icmp
+```
+```bash
+    18:54:36.710519 IP 192.168.1.61 > 192.168.1.47: ICMP echo request, id 643, seq 0, length 8
+    18:54:36.711205 IP 192.168.1.47 > 192.168.1.61: ICMP echo reply, id 643, seq 0, length 8
+```
+```bash
+    # Router
+    nmap -sO 192.168.1.1 -p1,6,17
+    PROTOCOL STATE         SERVICE
+    1        open          icmp
+    6        open          tcp
+    17       open|filtered udp
+```
+```bash
+    18:57:48.906290 IP 192.168.1.61.46371 > 192.168.1.1.40125: UDP, length 0
+    18:57:48.906330 IP 192.168.1.61 > 192.168.1.1: ICMP echo request, id 13828, seq 0, length 8
+    18:57:48.906343 IP 192.168.1.61.46371 > 192.168.1.1.http: Flags [.], ack 2171228364, win 1024, length 0
+    18:57:48.919569 IP 192.168.1.1.http > 192.168.1.61.46371: Flags [R], seq 2171228364, win 0, length 0
+    18:57:48.919896 IP 192.168.1.1 > 192.168.1.61: ICMP echo reply, id 13828, seq 0, length 8
+    18:57:50.011378 IP 192.168.1.61.46373 > 192.168.1.1.40125: UDP, length 0
+    18:57:50.479656 IP 192.168.1.1 > 192.168.1.61: ICMP echo request, id 17888, seq 0, length 64
+    18:57:50.479695 IP 192.168.1.61 > 192.168.1.1: ICMP echo reply, id 17888, seq 0, length 64
+    18:57:58.658836 IP 192.168.1.47.54043 > 192.168.1.61.2054: UDP, length 28
+    18:57:58.658938 IP 192.168.1.61 > 192.168.1.47: ICMP 192.168.1.61 udp port 2054 unreachable, length 64
 ```
