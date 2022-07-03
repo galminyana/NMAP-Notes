@@ -221,8 +221,7 @@ Scan a target without sending any packet from the attacker machine to the target
     ZOMBIE --------> RST + IPID= X+2 ----> ATTACKER
 ```
 ```bash
-
-
+   TBD
 ```
 
 - Closed Port
@@ -240,8 +239,7 @@ Scan a target without sending any packet from the attacker machine to the target
     ZOMBIE --------> RST + IPID= X+1 ----> ATTACKER
 ```
 ```bash
-
-
+   TBD
 ```
 
 - Filtered Port
@@ -258,7 +256,28 @@ Scan a target without sending any packet from the attacker machine to the target
     ZOMBIE --------> RST + IPID= X+1 ----> ATTACKER
 ```
 ```bash
-
-
+   TBD
 ```
-The difficulty of this attack, t's to find the right Zombie's host. Usually, hosts that implement a basic network stacks, are vulnerable to IP ID traffic detection. Also, there is a NSE Script called `ipidseq.nse` to help identify zombie candidates. This scripts probes a host to classify it's IP ID generation method.
+The difficulty of this attack, t's to find the right Zombie's host. Usually, hosts that implement a basic network stacks, are vulnerable to IP ID traffic detection. Also, there is a NSE Script called `ipidseq.nse` to help identify zombie candidates. This scripts probes a host to classify it's IP ID generation method:
+```bash
+   # Find random vulnerable hosts
+   nmap -p80 --script ipidseq -iR 1000
+```
+
+When the Zombie is not valid, usually will get the following error:
+```bash
+   …cannot be used because it has not returned any of our probes — perhaps it is down or firewalled.
+   QUITTING!”
+```
+### TCP Protocol Scan (-sO)
+---
+To determine which IP protocols are supported by target hosts. It cycles, by default, throught the 256 protocol numbers to check. The `-p` option can be used to select the protocol number to be scaned instead the port (this scan does not scan ports ;-) ).
+
+```markup
+   # Probe Response                                 # Status                #
+   #------------------------------------------------#-----------------------#
+   # Any response in any protocol from target host  # Open                  #
+   # ICMP protocol unreachable erro                 # Closed                #  <--  ICMP type 3, code 2
+   # Other ICMP unreachable errors                  # Filtered              #  <--  ICMP type 3, code 1, 3, 9, 10, or 13
+   # No response received                           # Open|Filtered         #   
+```
