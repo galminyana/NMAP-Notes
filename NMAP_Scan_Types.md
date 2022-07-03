@@ -16,8 +16,7 @@ This type of scan does not complete a full TCP connection. It sends a SYN TCP pa
    # ICMP unreachable error # Filtered #   <--  ICMP type 3, code 1,2,3,9,10,13
 ```
 
-- Open Port
-Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
+- Open Port: Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER <------ SYN,ACK <------- TARGET
@@ -29,8 +28,7 @@ Nmap receives a SYN,ACK from the target, then does not establish the connection 
 20:56:33.637856 IP 192.168.1.61.35266 > 192.168.1.1.ssh: Flags [R], seq 483337883, win 0, length 0
 ```
 
-- Closed Port 
-Nmap receives a RST from the target.
+- Closed Port: Nmap receives a RST from the target.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER <------ RST <------- TARGET
@@ -40,8 +38,7 @@ Nmap receives a RST from the target.
 20:57:05.218495 IP 192.168.1.1.smtp > 192.168.1.61.52423: Flags [R.], seq 0, ack 764755951, win 0, length 0
 ```
 
-- Filtered Port
-nmap does not receive anything from the target (packet dropped) or receives an ICMP Unreachable error.
+- Filtered Port: nmap does not receive anything from the target (packet dropped) or receives an ICMP Unreachable error.
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER ------> SYN -------> TARGET
@@ -70,11 +67,9 @@ This type of scan establishes a full TCP connection.
 21:13:04.205058 IP 192.168.1.61.45178 > 192.168.1.1.ssh: Flags [R.], seq 1, ack 1, win 502, options [nop,nop,TS val 4229566324 ecr 3077863243], length 0
 ```
 
-- Closed Port
-It's the same behaviour as the SYN Scan
+- Closed Port: It's the same behaviour as the SYN Scan
 
-- Filtered Port
-Same behaviour as the SYN Scan
+- Filtered Port: Same behaviour as the SYN Scan
 
 ### TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)
 ---
