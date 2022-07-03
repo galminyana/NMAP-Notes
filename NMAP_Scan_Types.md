@@ -323,3 +323,15 @@ Check IP Protocol numbers at [https://en.wikipedia.org/wiki/List_of_IP_protocol_
     18:57:58.658836 IP 192.168.1.47.54043 > 192.168.1.61.2054: UDP, length 28
     18:57:58.658938 IP 192.168.1.61 > 192.168.1.47: ICMP 192.168.1.61 udp port 2054 unreachable, length 64
 ```
+
+### Custom SYN/FIN Scan (--scanflags SYNFIN)
+---
+Sometimes firewalls only block connections for incoming packets with the SYN flag set only, not the SYN/ACK for in case it's comming from a related connection originated from the target host. Some hosts 
+```bash
+    nmap -sS --scanflags SYNFIN TARGET 
+```
+### Custom PSH Scan (--scanflags PSH)
+---
+```bash
+    nmap -sF --scanflags PSH TARGET
+```
