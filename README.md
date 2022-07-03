@@ -201,3 +201,64 @@ Not so usefull in actual systems. It sends a probe with FIN and ACK flags, and t
     00:43:51.093734 IP 192.168.1.61.56250 > 192.168.1.41.smtp: Flags [F.], seq 0, ack 1859801841, win 1024, length 0
     00:43:51.096878 IP 192.168.1.41.smtp > 192.168.1.61.56250: Flags [R], seq 1859801841, win 0, length 0
 ```
+### TCP Iddle Scan (-sI)
+---
+Scan a target without sending any packet from the attacker machine to the target host. This scan relies in that every IP packet on internet has a fragment identification number (IP ID) and many operating systems increment this number for each packet sent. The attack can detect a open, closer or filtered port, and the process works as follows for each case:
+
+- Open Port
+```markup
+    # Step 1: Probe the Zombie's IP ID
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID = X -----> ATTACKER
+    #Step 2: Attacker sends a forged a SYN spoofing with zombie's IP as the source address to target
+             The Zombie, not expecting this SYN/ACK, responds with a RST, increasing it's IP ID
+    ATTACKER ------> Spoofed SYN --------> TARGET
+    TARGET --------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID = X+1 ---> TARGET
+    #Step 3: Attacker probes zombine again for the IP ID
+             IP ID increased in 2 units, then port it's open
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID= X+2 ----> ATTACKER
+```
+```bash
+
+
+```
+
+- Closed Port
+```markup
+    # Step 1: Probe the Zombie's IP ID
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID = X -----> ATTACKER
+    #Step 2: Attacker sends a forged a SYN spoofing with zombie's IP as the source address to target
+             As the Zombie receives a RST, does not change it's IPID as there is no forged packet
+    ATTACKER ------> Spoofed SYN --------> TARGET
+    TARGET --------> RST ------------> ZOMBIE
+    #Step 3: Attacker probes zombine again for the IP ID
+             Only increased in 1, then port is closed
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID= X+1 ----> ATTACKER
+```
+```bash
+
+
+```
+
+- Filtered Port
+```markup
+    # Step 1: Probe the Zombie's IP ID
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID = X -----> ATTACKER
+    #Step 2: Attacker sends a forged a SYN spoofing with zombie's IP as the source address to target
+             As the Zombie receives a RST, does not change it's IPID as there is no forged packet
+    ATTACKER ------> Spoofed SYN --------> TARGET
+    #Step 3: Attacker probes zombine again for the IP ID
+             Only increased in 1, then port is closed
+    ATTACKER ------> SYN/ACK ------------> ZOMBIE
+    ZOMBIE --------> RST + IPID= X+1 ----> ATTACKER
+```
+```bash
+
+
+```
+The difficulty of this attack, t's to find the right Zombie's host. Usually, hosts that implement a basic network stacks, are vulnerable to IP ID traffic detection. Also, there is a NSE Script called `ipidseq.nse` to help identify zombie candidates. This scripts probes a host to classify it's IP ID generation method.
