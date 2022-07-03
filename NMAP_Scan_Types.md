@@ -1,4 +1,4 @@
-# NMAP Scan Types (Work on Progress)
+# NMAP Scan Types
 ---
 
 This document will try to compile all the scan types that nmap can do with the traffic captures for better understanding of how they work at a network level.
@@ -16,7 +16,7 @@ This type of scan does not complete a full TCP connection. It sends a SYN TCP pa
    # ICMP unreachable error # Filtered #   <--  ICMP type 3, code 1,2,3,9,10,13
 ```
 
-#### Open Port
+- Open Port
 Nmap receives a SYN,ACK from the target, then does not establish the connection and nmap sends a RST.
 ```markup
     ATACKER ------> SYN -------> TARGET
@@ -29,7 +29,7 @@ Nmap receives a SYN,ACK from the target, then does not establish the connection 
 20:56:33.637856 IP 192.168.1.61.35266 > 192.168.1.1.ssh: Flags [R], seq 483337883, win 0, length 0
 ```
 
-#### Closed Port 
+- Closed Port 
 Nmap receives a RST from the target.
 ```markup
     ATACKER ------> SYN -------> TARGET
@@ -40,7 +40,7 @@ Nmap receives a RST from the target.
 20:57:05.218495 IP 192.168.1.1.smtp > 192.168.1.61.52423: Flags [R.], seq 0, ack 764755951, win 0, length 0
 ```
 
-#### Filtered Port
+- Filtered Port
 nmap does not receive anything from the target (packet dropped) or receives an ICMP Unreachable error.
 ```markup
     ATACKER ------> SYN -------> TARGET
@@ -56,8 +56,7 @@ nmap does not receive anything from the target (packet dropped) or receives an I
 ---
 This type of scan establishes a full TCP connection. 
 
-#### Open Port
-
+- Open Port
 ```markup
     ATACKER ------> SYN -------> TARGET
     ATACKER <------ SYN,ACK <------- TARGET
@@ -71,10 +70,10 @@ This type of scan establishes a full TCP connection.
 21:13:04.205058 IP 192.168.1.61.45178 > 192.168.1.1.ssh: Flags [R.], seq 1, ack 1, win 502, options [nop,nop,TS val 4229566324 ecr 3077863243], length 0
 ```
 
-#### Closed Port
+- Closed Port
 It's the same behaviour as the SYN Scan
 
-#### Filtered Port
+- Filtered Port
 Same behaviour as the SYN Scan
 
 ### TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)
@@ -104,19 +103,19 @@ See different packet capture for each scan type for an open port
     PORT   STATE         SERVICE
     22/tcp open|filtered ssh
 ```
-#### FIN Scan 
+- FIN Scan 
 ```bash
     # No response, port is NOT closed
     23:39:06.007022 IP 192.168.1.61.48111 > 192.168.1.1.ssh: Flags [F], seq 3108583640, win 1024, length 0
     23:39:06.107481 IP 192.168.1.61.48113 > 192.168.1.1.ssh: Flags [F], seq 3108714714, win 1024, length 0
 ```
-#### NULL Scan
+- NULL Scan
 ```bash
     # No response, port is NOT closed
     00:00:55.948950 IP 192.168.1.61.53762 > 192.168.1.1.ssh: Flags [none], win 1024, length 0
     00:00:56.053450 IP 192.168.1.61.53764 > 192.168.1.1.ssh: Flags [none], win 1024, length 0
 ```
-#### Xmas Scan
+- Xmas Scan
 ```bash
     # No response, port is NOT closed
     00:02:13.803776 IP 192.168.1.61.63799 > 192.168.1.1.ssh: Flags [FPU], seq 1151864062, win 1024, urg 0, length 0
