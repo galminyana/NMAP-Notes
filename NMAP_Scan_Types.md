@@ -4,6 +4,7 @@ This document will try to compile all the scan types that nmap can do with the t
 
 - [TCP SYN Scan (-sS)](#tcp-syn-scan---ss-)
 - [TCP Connect Scan (-sT)](#tcp-connect-scan---st-)
+- [UDP Scan (-sU)](#tcp-connect-scan---st-)
 - [TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)](#tcp-fin--null--and-xmas-scan-types---sf---sn---sx-)
 - [ACK Scan (-sA)](#ack-scan---sa-)
 - [TCP Window Scan (-sW)](#tcp-window-scan---sw-)
@@ -81,6 +82,73 @@ This type of scan establishes a full TCP connection.
 - Closed Port: It's the same behaviour as the SYN Scan
 
 - Filtered Port: Same behaviour as the SYN Scan
+
+### UDP Scan Type (-sU)
+---
+Sends and empty UDP packet to every scaned port, but for known protocols a specific packet will be sent and then, based on the response, decide the port status. If the scaned port it's open, as `nmap` will not receive a response. can't decide if it's bcause the port it's really open or filtered by a firewall. In case the payload sent by `nmap` is accepted in the port, some data will be responded and then `nmap` knows it's open.
+
+```markup
+   # Probe Response               # Status           #
+   #------------------------------#------------------#
+   # Any UDP response from target # Open             #
+   # No response received         # Open | Filtered  #
+   # ICMP port unreachable error  # Closed           # <--  ICMP type 3, code 3
+   # Other ICMP unreachable error # Filtered         # <--  ICMP type 3, code 1,2,9,10,13
+```
+
+Wnen UDP scan is combined with service and version detection, `nmap` will send known data to ports detected as `filtered|open`. If gets a response, then port it's marked as open. Probing scanme.nmap.org the following results apply:
+
+```markup
+    nmap -sUV -T4 -F --version-intensity 0 scanme.nmap.org
+    PORT      STATE         SERVICE     VERSION
+    68/udp    open|filtered tcpwrapped
+    120/udp   open|filtered tcpwrapped
+    123/udp   open          ntp         NTP v4 (secondary server)
+    445/udp   open|filtered tcpwrapped
+    515/udp   open|filtered tcpwrapped
+    520/udp   open|filtered tcpwrapped
+    593/udp   open|filtered tcpwrapped
+    1023/udp  open|filtered tcpwrapped
+    1029/udp  open|filtered tcpwrapped
+    1900/udp  open|filtered tcpwrapped
+    2222/udp  open|filtered tcpwrapped
+    5060/udp  open|filtered tcpwrapped
+    5353/udp  open|filtered zeroconf
+    31337/udp open|filtered BackOrifice
+    49192/udp open|filtered tcpwrapped
+    49194/udp open|filtered tcpwrapped
+    49200/udp open|filtered tcpwrapped
+```
+Trying the found cases:
+
+- Known Protocol on Open UDP Port
+```markup
+    nmap -sU -p123 scanme.nmap.org 
+    PORT    STATE SERVICE
+    123/udp open  ntp
+```
+```bash
+    # 123 is NTP, then nmap sends a payload for NTPv4
+    23:22:29.656216 IP 192.168.1.61.58399 > scanme.nmap.org.ntp: NTPv4, Client, length 48
+    # Same, but sending payload for NTPv3
+    23:22:29.656293 IP 192.168.1.61.58399 > scanme.nmap.org.ntp: NTPv3, symmetric active, length 48
+    # Response for the ntp service v4
+    23:22:29.827449 IP scanme.nmap.org.ntp > 192.168.1.61.58399: NTPv4, Server, length 48
+    # Also the response for v3
+    23:22:29.827455 IP scanme.nmap.org.ntp > 192.168.1.61.58399: NTPv3, symmetric passive, length 48
+```
+- Closed Port
+```markup
+    nmap -sUV -p65533 scanme.nmap.org 
+    PORT      STATE  SERVICE VERSION
+    65533/udp closed unknown
+```
+```bash
+    # Sent a raw UDP probe
+    23:34:32.671988 IP 192.168.1.61.62785 > scanme.nmap.org.65533: UDP, length 40
+    #! Received a ICMP port unreachable, hence port closed
+    23:34:32.852409 IP scanme.nmap.org > 192.168.1.61: ICMP scanme.nmap.org udp port 65533 unreachable, length 76
+```
 
 ### TCP FIN, NULL, and Xmas Scan Types (-sF, -sN, -sX)
 ---
