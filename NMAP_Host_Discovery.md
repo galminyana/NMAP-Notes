@@ -72,3 +72,26 @@ With the -Pn, see the difference:
    20:47:32.021837 IP dns.google.https > 192.168.1.34.42984: Flags [S.], seq 63304799, ack 2171424092, win 65535, options [mss 1430], length 0
    20:47:32.021862 IP 192.168.1.34.42984 > dns.google.https: Flags [R], seq 2171424092, win 0, length 0
 ```
+### TCP SYN Ping (-PS[port-list])
+---
+
+
+
+### TCP ACK Ping (-PA[port-list])
+---
+
+
+### UDP Ping (-PU[port-list])
+---
+
+
+### ICMP Ping types (-PE, -PP, and -PM)
+---
+
+### IP Protocol Ping (-PO[protocol list])
+---
+
+### ARP Scan (-PR)
+---
+
+
